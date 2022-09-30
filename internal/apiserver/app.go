@@ -21,6 +21,7 @@ Find more iam-apiserver information at:
 
 // NewApp creates an App object with default parameters.
 func NewApp(basename string) *app.App {
+	// --- 初始化mysql,redis,grpc,log等日志
 	opts := options.NewOptions()
 	application := app.NewApp("IAM API Server",
 		basename,

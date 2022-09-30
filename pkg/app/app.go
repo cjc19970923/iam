@@ -138,6 +138,7 @@ func WithValidArgs(args cobra.PositionalArgs) Option {
 }
 
 // WithDefaultValidArgs set default validation function to valid non-flag arguments.
+// --- 不要任何的非选项参数
 func WithDefaultValidArgs() Option {
 	return func(a *App) {
 		a.args = func(cmd *cobra.Command, args []string) error {
@@ -160,6 +161,7 @@ func NewApp(name string, basename string, opts ...Option) *App {
 		basename: basename,
 	}
 
+	// --- 选项模式
 	for _, o := range opts {
 		o(a)
 	}
@@ -177,12 +179,16 @@ func (a *App) buildCommand() {
 		// stop printing usage when the command errors
 		SilenceUsage:  true,
 		SilenceErrors: true,
-		Args:          a.args,
+		// --- Args来校验命令行非选项参数的默认校验逻辑 (不是跟在定义选项后面的参数)
+		Args: a.args,
 	}
 	// cmd.SetUsageTemplate(usageTemplate)
+	// --- 使用消息和错误消息输出到哪里
 	cmd.SetOut(os.Stdout)
 	cmd.SetErr(os.Stderr)
+	// --- pflag包SortFlags字段设置true会排序所有选项
 	cmd.Flags().SortFlags = true
+	// --- 该包调用了pflag提供的SetNormalizeFunc可以纠正用户传的参数 _转换为-, AddGoFlagSet可以混用flag及pflag
 	cliflag.InitFlags(cmd.Flags())
 
 	if len(a.commands) > 0 {
@@ -192,28 +198,35 @@ func (a *App) buildCommand() {
 		cmd.SetHelpCommand(helpCommand(FormatBaseName(a.basename)))
 	}
 	if a.runFunc != nil {
+		// --- RunE方法可以返回error
 		cmd.RunE = a.runCommand
 	}
 
+	// --- NamedFlagSets 一个map表存放FlagSet参数选项集
 	var namedFlagSets cliflag.NamedFlagSets
 	if a.options != nil {
 		namedFlagSets = a.options.Flags()
 		fs := cmd.Flags()
 		for _, f := range namedFlagSets.FlagSets {
+			// --- 将分组参数选项集放在Command的参数选项集中
 			fs.AddFlagSet(f)
 		}
 	}
 
+	// --- 打印应用的版本。知道应用的版本号
 	if !a.noVersion {
 		verflag.AddFlags(namedFlagSets.FlagSet("global"))
 	}
+	// --- 设置config参数选项，可以传入配置文件 并设置在cobra.OnInitialize阶段读取配置文件
 	if !a.noConfig {
 		addConfigFlag(a.basename, namedFlagSets.FlagSet("global"))
 	}
+	// --- 执行 -h/--help 时，输出的帮助信息
 	globalflag.AddGlobalFlags(namedFlagSets.FlagSet("global"), cmd.Name())
 	// add new global flagset to cmd FlagSet
 	cmd.Flags().AddFlagSet(namedFlagSets.FlagSet("global"))
 
+	// --- 自定义帮助命令输出方式
 	addCmdTemplate(&cmd, namedFlagSets)
 	a.cmd = &cmd
 }
@@ -234,12 +247,15 @@ func (a *App) Command() *cobra.Command {
 func (a *App) runCommand(cmd *cobra.Command, args []string) error {
 	printWorkingDir()
 	cliflag.PrintFlags(cmd.Flags())
+	// --- 打印版本信息
 	if !a.noVersion {
 		// display application version information
 		verflag.PrintAndExitIfRequested()
 	}
 
+	// --- 在cobra.OnInitialize阶段读取配置文件，在这里将命令行传入的选项参数替换配置文件的参数
 	if !a.noConfig {
+		// --- 绑定选项集 只绑定使用了的选项
 		if err := viper.BindPFlags(cmd.Flags()); err != nil {
 			return err
 		}
@@ -254,6 +270,7 @@ func (a *App) runCommand(cmd *cobra.Command, args []string) error {
 		if !a.noVersion {
 			log.Infof("%v Version: `%s`", progressMessage, version.Get().ToJSON())
 		}
+		// --- 打印使用的配置文件
 		if !a.noConfig {
 			log.Infof("%v Config file used: `%s`", progressMessage, viper.ConfigFileUsed())
 		}
@@ -273,15 +290,18 @@ func (a *App) runCommand(cmd *cobra.Command, args []string) error {
 
 func (a *App) applyOptionRules() error {
 	if completeableOptions, ok := a.options.(CompleteableOptions); ok {
+		// --- 补全参数
 		if err := completeableOptions.Complete(); err != nil {
 			return err
 		}
 	}
 
+	// --- 验证参数
 	if errs := a.options.Validate(); len(errs) != 0 {
 		return errors.NewAggregate(errs)
 	}
 
+	// --- 打印
 	if printableOptions, ok := a.options.(PrintableOptions); ok && !a.silence {
 		log.Infof("%v Config: `%s`", progressMessage, printableOptions.String())
 	}

@@ -32,14 +32,20 @@ func init() {
 func addConfigFlag(basename string, fs *pflag.FlagSet) {
 	fs.AddFlag(pflag.Lookup(configFlagName))
 
+	// --- 读取环境变量
 	viper.AutomaticEnv()
+	// --- 设置环境变量前缀
 	viper.SetEnvPrefix(strings.Replace(strings.ToUpper(basename), "-", "_", -1))
+	// --- 将viper.Get(key) key字符串中'.'和'-'替换为'_'
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 
+	// --- 设置在cobra命令执行前的初始任务，而不是立马执行
 	cobra.OnInitialize(func() {
 		if cfgFile != "" {
+			// --- 指定配置文件名
 			viper.SetConfigFile(cfgFile)
 		} else {
+			// --- 配置文件搜索路径，可以设置多个配置文件搜索路径
 			viper.AddConfigPath(".")
 
 			if names := strings.Split(basename, "-"); len(names) > 1 {
@@ -50,8 +56,10 @@ func addConfigFlag(basename string, fs *pflag.FlagSet) {
 			viper.SetConfigName(basename)
 		}
 
+		// --- 读取配置文件。如果指定了配置文件名，则使用指定的配置文件，否则在注册的搜索路径中搜索
 		if err := viper.ReadInConfig(); err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "Error: failed to read configuration file(%s): %v\n", cfgFile, err)
+			// --- Exit 函数可以让当前程序以给出的状态码 code 退出。一般来说，状态码 0 表示成功，非 0 表示出错。程序会立刻终止，并且 defer 的函数不会被执行
 			os.Exit(1)
 		}
 	})
