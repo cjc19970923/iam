@@ -1,0 +1,5 @@
+#mysql
+docker run --restart=unless-stopped -d --name mysql -p 3306:3306 -v /Users/JOJO/work/iam/build/docker/mysql/conf/my.cnf:/etc/mysql/my.cnf -v /Users/JOJO/work/iam/build/docker/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=$MARIADB_ADMIN_PASSWORD mysql:8.0.26
+
+#redis
+docker run -p 6379:6379 --name redis -v /Users/JOJO/work/iam/build/docker/redis/conf:/etc/redis/redis.conf -v /Users/JOJO/work/iam/build/docker/redis/data:/data -d redis redis-server /etc/redis/redis.conf --appendonly yes
