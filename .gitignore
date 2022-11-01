@@ -348,3 +348,14 @@ dist
 .note.md
 
 # config files, may contain sensitive information
+
+
+
+# docker data
+build/docker/mysql/data
+build/docker/mysql/mysql-files
+
+build/docker/redis/data
+
+build/docker/mongo/db
+build/docker/mongo/log

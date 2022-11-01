@@ -33,12 +33,16 @@ Find more iam-pump information at:
 	Read configuration from specified \fB\fCFILE\fR, support JSON, TOML, YAML, HCL, or Java properties formats.
 
 .PP
-\fB--health-check-address\fP="0.0.0.0:6060"
+\fB--health-check-address\fP="0.0.0.0:5050"
 	Specifies liveness health check bind address.
 
 .PP
 \fB--health-check-path\fP="healthz"
 	Specifies liveness health check request path.
+
+.PP
+\fB-h\fP, \fB--help\fP=false
+	help for iam-watcher
 
 .PP
 \fB--log-backtrace-at\fP=:0
@@ -102,7 +106,7 @@ Find more iam-pump information at:
 
 .PP
 \fB--mysql.max-connection-life-time\fP=10s
-	Maximum connection life time allowed to connecto to mysql.
+	Maximum connection life time allowed to connect to mysql.
 
 .PP
 \fB--mysql.max-idle-connections\fP=100
