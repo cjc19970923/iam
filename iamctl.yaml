@@ -9,8 +9,8 @@ user:
   password: Admin@2021 # iam 密码
   #secret-id: # 密钥 ID
   #secret-key: # 密钥 Key
-  client-certificate: /Users/harden/.iam/cert/admin.pem # 用于 TLS 的客户端证书文件路径
-  client-key: /Users/harden/.iam/cert/admin-key.pem # 用于 TLS 的客户端 key 文件路径
+  client-certificate: /Users/JOJO/.iam/cert/admin.pem # 用于 TLS 的客户端证书文件路径
+  client-key: /Users/JOJO/.iam/cert/admin-key.pem # 用于 TLS 的客户端 key 文件路径
   #client-certificate-data:
   #client-key-data:
 
