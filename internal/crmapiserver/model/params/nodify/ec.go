@@ -1,6 +1,9 @@
 package nodify
 
-import "strconv"
+import (
+	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
+	"strconv"
+)
 
 var ecTypeMapping map[string]string = map[string]string{
 	"1":  "addCus",
@@ -22,18 +25,22 @@ type EcNodifyParams struct {
 	CrmId int `json:"crmId" binding:"required,number"`
 }
 
-func (e EcNodifyParams) GetCrmType() string {
+func (e *EcNodifyParams) GetCrmType() string {
 	return "ec"
 }
 
-func (e EcNodifyParams) GetType() (string, bool) {
+func (e *EcNodifyParams) GetType() (string, bool) {
 	action := strconv.Itoa(e.Type)
 	action, ok := ecTypeMapping[action]
 	return action, ok
 }
 
-func (e EcNodifyParams) GetCusId() string {
+func (e *EcNodifyParams) GetCusId() string {
 	return strconv.Itoa(e.CrmId)
+}
+
+func (e *EcNodifyParams) GetStore() crm.CrmStore {
+	return &crm.EcStore{}
 }
 
 //func NewEcNodifyParams() *EcNodifyParams {

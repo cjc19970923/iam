@@ -1,6 +1,9 @@
 package nodify
 
-import "strconv"
+import (
+	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
+	"strconv"
+)
 
 var hukeTypeMapping map[string]string = map[string]string{
 	"1010": "addCus",
@@ -20,16 +23,20 @@ type HukeNodifyParams struct {
 	ContactList []map[string]int `json:"contactList"`
 }
 
-func (e HukeNodifyParams) GetCrmType() string {
+func (e *HukeNodifyParams) GetCrmType() string {
 	return "huke"
 }
 
-func (h HukeNodifyParams) GetType() (string, bool) {
+func (h *HukeNodifyParams) GetType() (string, bool) {
 	action := strconv.Itoa(h.Type)
 	action, ok := ecTypeMapping[action]
 	return action, ok
 }
 
-func (h HukeNodifyParams) GetCusId() string {
+func (h *HukeNodifyParams) GetCusId() string {
 	return strconv.Itoa(h.Cid)
+}
+
+func (e *HukeNodifyParams) GetStore() crm.CrmStore {
+	return &crm.HukeStore{}
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
 	"github.com/marmotedu/iam/internal/pkg/code"
 	"github.com/marmotedu/iam/pkg/log"
+	"reflect"
 )
 
 type NodifyController struct {
@@ -60,15 +61,17 @@ func (n *NodifyController) Nodify(c *gin.Context) {
 		return
 	}
 
-	if err := c.ShouldBindJSON(&r); err != nil {
+	val := reflect.New(reflect.ValueOf(r).Elem().Type()).Interface().(nodify.NodifyParams)
+
+	if err := c.ShouldBindJSON(val); err != nil {
 		core.WriteResponse(c, errors.WithCode(code.ErrBind, err.Error()), nil)
 		return
 	}
 
 	//设置crmstore层
-	n.srv.Nodify().SetCrmStore()
+	//n.srv.Nodify().SetCrmStore()
 
-	err := n.srv.Nodify().CusNodify(r, crmInfo["appId"])
+	err := n.srv.Nodify().CusNodify(val, crmInfo["appId"])
 	if err != nil {
 		core.WriteResponse(c, err, "cusNodify service")
 		return
