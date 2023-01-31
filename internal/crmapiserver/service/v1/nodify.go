@@ -2,14 +2,13 @@ package v1
 
 import (
 	"github.com/marmotedu/errors"
-	"github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify"
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
 	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
 	"github.com/marmotedu/iam/internal/pkg/code"
 )
 
 type NodifySrv interface {
-	CusNodify(params nodify.NodifyParams, appId string) error
+	CusNodify(params crm.CrmStore) error
 	SetCrmStore(store crm.CrmStore)
 }
 
@@ -28,16 +27,17 @@ func (n *nodifyService) SetCrmStore(store crm.CrmStore) {
 	n.crmStore = store
 }
 
-func (n *nodifyService) CusNodify(params nodify.NodifyParams, appId string) error {
-	action, ok := params.GetType()
+func (n *nodifyService) CusNodify(store crm.CrmStore) error {
+	action, ok := store.GetType()
 	if !ok {
 		return errors.WithCode(code.ErrCrmTypeIgnore, "")
 	}
 
-	_, err := n.store.CrmApplet().Get(appId)
+	applet, err := n.store.CrmApplet().Get(store.GetAppId())
 	if err != nil {
 		return err
 	}
+	store.SetApplet(applet)
 
 	switch action {
 	case "addCus":
@@ -46,4 +46,12 @@ func (n *nodifyService) CusNodify(params nodify.NodifyParams, appId string) erro
 		return nil
 	}
 	return nil
+}
+
+func (n *nodifyService) addCus() {
+	
+}
+
+func (n *nodifyService) updCus() {
+
 }
