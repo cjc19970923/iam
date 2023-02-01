@@ -1,8 +1,10 @@
 package sync
 
 import (
+	"github.com/gin-gonic/gin"
 	srvv1 "github.com/marmotedu/iam/internal/crmapiserver/service/v1"
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
+	"github.com/marmotedu/iam/pkg/log"
 )
 
 type SyncController struct {
@@ -15,6 +17,7 @@ func NewSyncController(store store.Factory) *SyncController {
 	}
 }
 
-func (s *SyncController) SyncCusFieldMap() {
+func (s *SyncController) SyncCusFieldMap(c *gin.Context) {
+	log.L(c).Info("SyncCusFieldMap")
 
 }
