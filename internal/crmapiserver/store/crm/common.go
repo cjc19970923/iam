@@ -1,12 +1,11 @@
 package crm
 
-import "github.com/marmotedu/iam/internal/crmapiserver/model"
+import (
+	"github.com/marmotedu/iam/internal/crmapiserver/model"
+	nodifyParams "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinterface"
+)
 
-type common struct {
-	AppId string
+type Common struct {
+	nodifyParams.NodifyParams
 	*model.CrmApplet
-}
-
-func (c *common) SetApplet(applet *model.CrmApplet) {
-	c.CrmApplet = applet
 }

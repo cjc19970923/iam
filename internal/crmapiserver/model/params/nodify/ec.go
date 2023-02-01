@@ -1,6 +1,8 @@
 package nodify
 
 import (
+	"github.com/marmotedu/iam/internal/crmapiserver/model"
+	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
 	"strconv"
 )
 
@@ -38,10 +40,8 @@ func (e *EcNodifyParams) GetCusId() string {
 	return strconv.Itoa(e.CrmId)
 }
 
-//func (e *EcNodifyParams) GetStore() crm.CrmStore {
-//	return &crm.EcStore{}
-//}
-
-//func NewEcNodifyParams() *EcNodifyParams {
-//	return &EcNodifyParams{}
-//}
+func (e *EcNodifyParams) GetStore(applet *model.CrmApplet) crm.CrmStore {
+	return &crm.HukeStore{
+		&crm.Common{e, applet},
+	}
+}

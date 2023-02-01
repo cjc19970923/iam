@@ -4,9 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/marmotedu/component-base/pkg/core"
 	"github.com/marmotedu/errors"
+	"github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify"
+	nodifyParams "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinterface"
 	srvv1 "github.com/marmotedu/iam/internal/crmapiserver/service/v1"
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
-	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
 	"github.com/marmotedu/iam/internal/pkg/code"
 	"github.com/marmotedu/iam/pkg/log"
 	"reflect"
@@ -42,21 +43,21 @@ func (n *NodifyController) Nodify(c *gin.Context) {
 		return
 	}
 
-	r, ok := crm.CrmTypeMapping[crmInfo["crmType"]]
+	r, ok := nodify.CrmTypeMapping[crmInfo["crmType"]]
 	if !ok {
 		err := errors.WithCode(code.ErrCrmAppNotFound, "")
 		core.WriteResponse(c, err, nil)
 		return
 	}
 
-	val := reflect.New(reflect.ValueOf(r).Elem().Type()).Interface().(crm.CrmStore)
+	val := reflect.New(reflect.ValueOf(r).Elem().Type()).Interface().(nodifyParams.NodifyParams)
 
 	if err := c.ShouldBindJSON(val); err != nil {
 		core.WriteResponse(c, errors.WithCode(code.ErrBind, err.Error()), nil)
 		return
 	}
 
-	err := n.srv.Nodify().CusNodify(val)
+	err := n.srv.Nodify().CusNodify(val, crmInfo["appId"])
 	if err != nil {
 		core.WriteResponse(c, err, "cusNodify service")
 		return

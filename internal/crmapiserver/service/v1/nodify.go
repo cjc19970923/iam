@@ -2,14 +2,15 @@ package v1
 
 import (
 	"github.com/marmotedu/errors"
+	nodifyParams "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinterface"
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
 	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
 	"github.com/marmotedu/iam/internal/pkg/code"
 )
 
 type NodifySrv interface {
-	CusNodify(params crm.CrmStore) error
-	SetCrmStore(store crm.CrmStore)
+	CusNodify(params nodifyParams.NodifyParams, appId string) error
+	//SetCrmStore(store crm.CrmStore)
 }
 
 type nodifyService struct {
@@ -23,21 +24,22 @@ func newNodifyService(srv *service) *nodifyService {
 	}
 }
 
-func (n *nodifyService) SetCrmStore(store crm.CrmStore) {
-	n.crmStore = store
-}
+//func (n *nodifyService) SetCrmStore(store crm.CrmStore) {
+//	n.crmStore = store
+//}
 
-func (n *nodifyService) CusNodify(store crm.CrmStore) error {
-	action, ok := store.GetType()
+func (n *nodifyService) CusNodify(params nodifyParams.NodifyParams, appId string) error {
+	action, ok := params.GetType()
 	if !ok {
 		return errors.WithCode(code.ErrCrmTypeIgnore, "")
 	}
 
-	applet, err := n.store.CrmApplet().Get(store.GetAppId())
+	applet, err := n.store.CrmApplet().Get(appId)
 	if err != nil {
 		return err
 	}
-	store.SetApplet(applet)
+
+	n.crmStore = params.GetStore(applet)
 
 	switch action {
 	case "addCus":
@@ -49,7 +51,7 @@ func (n *nodifyService) CusNodify(store crm.CrmStore) error {
 }
 
 func (n *nodifyService) addCus() {
-	
+
 }
 
 func (n *nodifyService) updCus() {
