@@ -2,14 +2,14 @@ package v1
 
 import (
 	"github.com/marmotedu/errors"
-	nodifyParams "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinterface"
+	"github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify"
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
 	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
 	"github.com/marmotedu/iam/internal/pkg/code"
 )
 
 type NodifySrv interface {
-	CusNodify(params nodifyParams.NodifyParams, appId string) error
+	CusNodify(params nodify.NodifyParams, appId string) error
 	//SetCrmStore(store crm.CrmStore)
 }
 
@@ -28,7 +28,7 @@ func newNodifyService(srv *service) *nodifyService {
 //	n.crmStore = store
 //}
 
-func (n *nodifyService) CusNodify(params nodifyParams.NodifyParams, appId string) error {
+func (n *nodifyService) CusNodify(params nodify.NodifyParams, appId string) error {
 	action, ok := params.GetType()
 	if !ok {
 		return errors.WithCode(code.ErrCrmTypeIgnore, "")

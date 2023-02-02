@@ -1,6 +1,9 @@
 package nodify
 
-import "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinterface"
+import (
+	"github.com/marmotedu/iam/internal/crmapiserver/model"
+	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
+)
 
 // 映射对应erp客户的操作
 // addCus 添加客户
@@ -12,7 +15,14 @@ import "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinte
 // delLink 删除联系人
 // mergeLink 合并联系人
 
-var CrmTypeMapping map[string]pinterface.NodifyParams = map[string]pinterface.NodifyParams{
+var CrmTypeMapping map[string]NodifyParams = map[string]NodifyParams{
 	"ec":   &EcNodifyParams{},
 	"huke": &HukeNodifyParams{},
+}
+
+type NodifyParams interface {
+	GetCrmType() string
+	GetType() (string, bool)
+	GetCusId() string
+	GetStore(*model.CrmApplet) crm.CrmStore
 }

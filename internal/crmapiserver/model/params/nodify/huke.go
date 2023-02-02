@@ -24,7 +24,7 @@ type HukeNodifyParams struct {
 	ContactList []map[string]int `json:"contactList"`
 }
 
-func (e *HukeNodifyParams) GetCrmType() string {
+func (h *HukeNodifyParams) GetCrmType() string {
 	return "huke"
 }
 

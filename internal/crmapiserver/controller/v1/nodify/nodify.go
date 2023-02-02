@@ -5,7 +5,6 @@ import (
 	"github.com/marmotedu/component-base/pkg/core"
 	"github.com/marmotedu/errors"
 	"github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify"
-	nodifyParams "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinterface"
 	srvv1 "github.com/marmotedu/iam/internal/crmapiserver/service/v1"
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
 	"github.com/marmotedu/iam/internal/pkg/code"
@@ -50,7 +49,7 @@ func (n *NodifyController) Nodify(c *gin.Context) {
 		return
 	}
 
-	val := reflect.New(reflect.ValueOf(r).Elem().Type()).Interface().(nodifyParams.NodifyParams)
+	val := reflect.New(reflect.ValueOf(r).Elem().Type()).Interface().(nodify.NodifyParams)
 
 	if err := c.ShouldBindJSON(val); err != nil {
 		core.WriteResponse(c, errors.WithCode(code.ErrBind, err.Error()), nil)

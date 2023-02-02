@@ -2,10 +2,10 @@ package crm
 
 import (
 	"github.com/marmotedu/iam/internal/crmapiserver/model"
-	nodifyParams "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/pinterface"
+	"github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify"
 )
 
 type Common struct {
-	nodifyParams.NodifyParams
+	nodify.NodifyParams
 	*model.CrmApplet
 }
