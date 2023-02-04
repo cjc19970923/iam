@@ -42,6 +42,6 @@ func (e *EcNodifyParams) GetCusId() string {
 
 func (e *EcNodifyParams) GetStore(applet *model.CrmApplet) crm.CrmStore {
 	return &crm.HukeStore{
-		&crm.Common{e, applet},
+		&crm.Common{applet},
 	}
 }

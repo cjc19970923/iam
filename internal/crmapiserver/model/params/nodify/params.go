@@ -2,6 +2,7 @@ package nodify
 
 import (
 	"github.com/marmotedu/iam/internal/crmapiserver/model"
+	"github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/common"
 	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
 )
 
@@ -15,14 +16,11 @@ import (
 // delLink 删除联系人
 // mergeLink 合并联系人
 
-var CrmTypeMapping map[string]NodifyParams = map[string]NodifyParams{
+var CrmTypeMapping map[string]common.NodifyParams = map[string]common.NodifyParams{
 	"ec":   &EcNodifyParams{},
 	"huke": &HukeNodifyParams{},
 }
 
-type NodifyParams interface {
-	GetCrmType() string
-	GetType() (string, bool)
-	GetCusId() string
+type Store interface {
 	GetStore(*model.CrmApplet) crm.CrmStore
 }

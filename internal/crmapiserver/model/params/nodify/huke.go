@@ -30,7 +30,7 @@ func (h *HukeNodifyParams) GetCrmType() string {
 
 func (h *HukeNodifyParams) GetType() (string, bool) {
 	action := strconv.Itoa(h.Type)
-	action, ok := ecTypeMapping[action]
+	action, ok := hukeTypeMapping[action]
 	return action, ok
 }
 
@@ -40,6 +40,6 @@ func (h *HukeNodifyParams) GetCusId() string {
 
 func (h *HukeNodifyParams) GetStore(applet *model.CrmApplet) crm.CrmStore {
 	return &crm.HukeStore{
-		&crm.Common{h, applet},
+		&crm.Common{applet},
 	}
 }

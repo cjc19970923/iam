@@ -1,6 +1,9 @@
 package v1
 
-import "github.com/marmotedu/iam/internal/crmapiserver/store"
+import (
+	"github.com/marmotedu/iam/internal/crmapiserver/store"
+	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
+)
 
 type SyncSrv interface {
 	SyncCusFieldMap() error
@@ -9,7 +12,8 @@ type SyncSrv interface {
 }
 
 type syncService struct {
-	store store.Factory
+	store    store.Factory
+	crmStore crm.CrmStore
 }
 
 func newSyncService(srv *service) *syncService {

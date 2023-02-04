@@ -3,13 +3,14 @@ package v1
 import (
 	"github.com/marmotedu/errors"
 	"github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify"
+	nodifyParams "github.com/marmotedu/iam/internal/crmapiserver/model/params/nodify/common"
 	"github.com/marmotedu/iam/internal/crmapiserver/store"
 	"github.com/marmotedu/iam/internal/crmapiserver/store/crm"
 	"github.com/marmotedu/iam/internal/pkg/code"
 )
 
 type NodifySrv interface {
-	CusNodify(params nodify.NodifyParams, appId string) error
+	CusNodify(params nodifyParams.NodifyParams, appId string) error
 	//SetCrmStore(store crm.CrmStore)
 }
 
@@ -24,11 +25,7 @@ func newNodifyService(srv *service) *nodifyService {
 	}
 }
 
-//func (n *nodifyService) SetCrmStore(store crm.CrmStore) {
-//	n.crmStore = store
-//}
-
-func (n *nodifyService) CusNodify(params nodify.NodifyParams, appId string) error {
+func (n *nodifyService) CusNodify(params nodifyParams.NodifyParams, appId string) error {
 	action, ok := params.GetType()
 	if !ok {
 		return errors.WithCode(code.ErrCrmTypeIgnore, "")
@@ -39,7 +36,12 @@ func (n *nodifyService) CusNodify(params nodify.NodifyParams, appId string) erro
 		return err
 	}
 
-	n.crmStore = params.GetStore(applet)
+	store, ok := params.(nodify.Store)
+	if !ok {
+		return errors.WithCode(code.ErrNodifyParamsStore, "")
+	}
+
+	n.crmStore = store.GetStore(applet)
 
 	switch action {
 	case "addCus":

@@ -12,4 +12,7 @@ const (
 
 	// ErrCrmAppDisable - 400: ErrCrmAppDisable.
 	ErrCrmAppDisable
+
+	// ErrNodifyParamsStore - 400: ErrNodifyParamsStore.
+	ErrNodifyParamsStore
 )
