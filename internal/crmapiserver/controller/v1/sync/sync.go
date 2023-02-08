@@ -23,8 +23,22 @@ func NewSyncController(store store.Factory) *SyncController {
 
 func (s *SyncController) SyncCusFieldMap(c *gin.Context) {
 	log.L(c).Info("SyncCusFieldMap")
+	//r := &sync.SyncParams{}
+	//if err := c.ShouldBindJSON(r); err != nil {
+	//	core.WriteResponse(c, errors.WithCode(code.ErrBind, ""), err.Error())
+	//}
+	r, ok := validationParams(c)
+	if !ok {
+		return
+	}
+
+}
+
+func validationParams(c *gin.Context) (*sync.SyncParams, bool) {
 	r := &sync.SyncParams{}
 	if err := c.ShouldBindJSON(r); err != nil {
 		core.WriteResponse(c, errors.WithCode(code.ErrBind, ""), err.Error())
+		return nil, false
 	}
+	return r, true
 }
